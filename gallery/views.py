@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.utils import timezone
 from django.http import JsonResponse
 
@@ -87,13 +87,29 @@ def scan(request, number):
     res = {}
     pic_obj = Pic.objects.filter(pk=number).first()
     res['pic_obj'] = pic_obj
+
+    if request.session.get('is_login'):
+        username = request.session.get('username')
+        res['username'] = username
+
+    # 取上一/下一张图
+    try:
+        pic_obj_next = Pic.objects.filter(pk__lt=number).last()  # prev/left
+        if not pic_obj_next:
+            pic_obj_next = Pic.objects.all().last()
+    except:
+        return redirect('index')
+
+    try:
+        pic_obj_prev = Pic.objects.filter(pk__gt=number).first()
+        if not pic_obj_prev:
+            pic_obj_prev = Pic.objects.all().first()
+    except:
+        return redirect('index')
+
     # 传递前一个/后一个
-    pic_obj_next = Pic.objects.filter(pk__lt=number).first()  # prev/left
-    pic_obj_prev = Pic.objects.filter(pk__gt=number).first()  # next / right
     res['pic_obj_prev'] = pic_obj_prev
     res['pic_obj_next'] = pic_obj_next
-    if request.is_ajax():
-        print(pic_obj_prev, pic_obj_next)
-        return JsonResponse(res)
+    # 放弃了ajax方法
 
     return render(request, 'pics/detail.html', res)

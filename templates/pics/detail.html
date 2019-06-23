@@ -1,55 +1,30 @@
+{% extends 'base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    <script src="{% static 'js/jquery-3.3.1.js' %}"></script>   <!-- css -->
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-</head>
-<body>
 
+{% block body %}
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <div id="carousel-example-generic" class="carousel slide" style="margin-top: 60px">
+            <div id="carousel-example-generic" class="carousel slide" style="margin-top: -10px">
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner" role="listbox">
                     <div class="item active" style="min-height: 500px; text-align:center">
                         <img src="{{ pic_obj.picture.url }}" alt="..." class="img-obj"
                              style="height: 500px; margin: 0 auto;">
-                        <div class="carousel-caption">
-                            {{ pic_obj.name }}
+                        <div class="carousel-caption" style="text-shadow: 0 0 22px black; color: white;">
+                            {{ pic_obj.name }} <br>{{ pic_obj.write_time|date:'Y-m-d' }}
                         </div>
                     </div>
-
-                    <div class="item item-left" style="min-height: 500px; text-align:center">
-                        <img src="{{ pic_obj_prev.picture.url }}" alt="{{ pic_obj_prev.pk }}" class="img-obj-l"
-                             style="height: 500px; margin: 0 auto;">
-                        <div class="carousel-caption">
-                            {{ pic_obj_prev.name }}
-                        </div>
-                    </div>
-
-                    <div class="item item-right" style="min-height: 500px; text-align:center">
-                        <img src="{{ pic_obj_next.picture.url }}" alt="{{ pic_obj_next.pk }}" class="img-obj-r"
-                             style="height: 500px; margin: 0 auto;">
-                        <div class="carousel-caption">
-                            {{ pic_obj_next.name }}
-                        </div>
-                    </div>
-                    {{ pic_obj_next.introduction }}
+                    {{ pic_obj.introduction }}
                 </div>
 
                 <!-- Controls -->
-                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <a class="left carousel-control" href="{% url 'gallery:scan' pic_obj_prev.pk %}" role="button">
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                     <span class="sr-only">Previous</span>
                 </a>
-                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <a class="right carousel-control" href="{% url 'gallery:scan' pic_obj_next.pk %}" role="button">
                     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                     <span class="sr-only">Next</span>
                 </a>
@@ -58,20 +33,7 @@
     </div>
 </div>
 
-<script>
-    $('.left').click(function () {
-        var left_pk = $('.img-obj-l').attr('alt');
-        $.ajax({
-            url: "{% url 'gallery:scan' 4 %}".replace(/4/, left_pk),
-            type: 'get',
-            data:{},
-            success: function (response) {
-                alert(response)
 
-            }
-        })
-    })
-</script>
 
-</body>
-</html>
+{% endblock %}
+
