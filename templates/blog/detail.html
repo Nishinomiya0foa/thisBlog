@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <main class="col-md-8 col-md-offset-2">
+                <article class="post post-1">
+                    <header class="entry-header">
+                        <h1 class="entry-title">
+                            {{ blog.title }}
+                        </h1>
+                        <div class="entry-meta">
+                            <span class="post-category"><a href="#">{{ blog.type }}</a></span>
+                            <span class="post-date"><a href="#"><time class="entry-date"
+                                                                      datetime="2012-11-09T23:15:57+00:00">{{ blog.write_time }}</time></a></span>
+                            <span class="post-author"><a href="#">{{ blog.author }}</a></span>
+                            {#                <span class="comments-link"><a href="#">4 评论</a></span>#}
+                            <span class="views-count"><a href="#">{{ blog.views }} 阅读</a></span>
+                        </div>
+                    </header>
+                    <div class="entry-content clearfix">
+                        <p>{{ blog.content|safe }}</p>
+{#                        <div class="read-more cl-effect-14">#}
+{#                            <a href="{% url 'blog:detail' blog.pk %}" class="more-link">继续阅读 <span#}
+{#                                    class="meta-nav">→</span></a>#}
+{#                        </div>#}
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+{% endblock body %}

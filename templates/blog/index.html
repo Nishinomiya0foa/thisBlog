@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block sitetitle %}
+    <title>Blog 首页</title>
+{% endblock %}
+
+{% block article %}
+    {% for blog in blogs %}
+        <article class="post post-1">
+            <header class="entry-header">
+                <h1 class="entry-title">
+                    <a href="{% url 'blog:detail' blog.pk %}">{{ blog.title }}</a>
+                </h1>
+                <div class="entry-meta">
+                    <span class="post-category"><a href="#">{{ blog.type }}</a></span>
+                    <span class="post-date"><a href="#"><time class="entry-date"
+                                                              datetime="2012-11-09T23:15:57+00:00">{{ blog.write_time }}</time></a></span>
+                    <span class="post-author"><a href="#">{{ blog.author }}</a></span>
+                    {#                <span class="comments-link"><a href="#">4 评论</a></span>#}
+                    <span class="views-count"><a href="#">{{ blog.views }} 阅读</a></span>
+                </div>
+            </header>
+            <div class="entry-content clearfix">
+                <p>{{ blog.content|safe|truncatechars_html:'160' }}</p>
+                <div class="read-more cl-effect-14">
+                    <a href="{% url 'blog:detail' blog.pk %}" class="more-link">继续阅读 <span class="meta-nav">→</span></a>
+                </div>
+            </div>
+        </article>
+        <hr>
+    {% endfor %}
+{% endblock article %}
+
+{% block newarticle %}
+    <div class="widget widget-recent-posts">
+        <h3 class="widget-title">最新文章</h3>
+        <ul>
+            {% for new_blog in new_blogs %}
+                <li>
+                    <a href="{% url 'blog:detail' new_blog.pk %}">{{ new_blog.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock newarticle %}
+
+{% block bydate %}
+    <div class="widget widget-archives">
+        <h3 class="widget-title">归档</h3>
+        <ul>
+            {% for month in by_month %}
+                <li>
+                    <a href="{% url 'index_record' month.write_time__month %}">{{ month.write_time__year }}
+                        年 {{ month.write_time__month }} 月 <span class="post-count"
+                                                                style="color: #66512c">-({{ month.pk__count }})</span></a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock bydate %}
+
+{% block classify %}
+    <div class="widget widget-category">
+        <h3 class="widget-title">分类</h3>
+        <ul>
+            {% for type in classify %}
+                <li>
+                    <a href="{% url 'index_classify' type.type_id %}">{{ type.type__name }} <span class="post-count"
+                                                           style="color: #66512c">-({{ type.pk__count }})</span></a>
+                </li>
+            {% endfor %}
+            <li>
+                <a href="{% url 'index' %}">全部 <span class="post-count"
+                                                       style="color: #66512c">-({{ classify_all }})</span></a>
+            </li>
+        </ul>
+    </div>
+{% endblock classify %}
+
+{% block pagination %}
+    <nav aria-label="Page navigation">
+
+        <ul class="pagination">
+            {% if blogs.has_previous %}
+                <li>
+                    <a href="?page={{ blogs.previous_page_number }}{% if search_content %}&search-content={{ search_content }}{% endif %}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {#        使用少量的分页#}
+            {% for pg in pageRange %}
+                {% if blogs.number == pg %}
+                    <li class="active"><a href="?page={{ pg }}{% if search_content %}&search-content={{ search_content }}{% endif %}">{{ pg }}</a></li>
+                {% else %}
+                    <li><a href="?page={{ pg }}{% if search_content %}&search-content={{ search_content }}{% endif %}">{{ pg }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if blogs.has_next %}
+                <li>
+                    <a href="?page={{ blogs.next_page_number }}{% if search_content %}&search-content={{ search_content }}{% endif %}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

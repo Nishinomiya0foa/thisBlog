@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block sitetitle %}
+    <title>博客管理</title>
+{% endblock %}
+
+{% block body %}
+    {% csrf_token %}
+    <div class="container">
+    {% if blogs %}
+            {% for blog in blogs %}
+            <div>
+                <div class="row" style="margin-top: 100px">
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="col-md-8"><a href="{% url 'blog:detail' blog.pk %}"><h3>{{ blog.title }}{% if blog.is_public %}
+                        {% else %}<span class="badge" style="margin-top: -20px">不公开</span>
+                        {% endif %}</h3></a>
+                        </div>
+                        <div class="col-md-4"><span class="pull-right">{{ blog.write_time }}</span></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-1">
+                        <div>{{ blog.content|safe|truncatechars_html:'100' }}</div>
+                    </div>
+                    <div class="col-md-2 col-md-offset-1">
+                        <a class="btn btn-primary" href="{% url 'blog:edit' blog.pk %}">编辑</a>
+                        <button class="btn btn-primary" value="{{ blog.pk }}">删除</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="pull-right">
+                            <span class="post-category"><a href="#">{{ blog.type }}</a></span>
+                            <span class="post-date"><a href="#"><time class="entry-date"
+                                                                      datetime="2012-11-09T23:15:57+00:00">{{ blog.write_time }}</time></a></span>
+                            <span class="post-author"><a href="#">{{ blog.author }}</a></span>
+                            {#                <span class="comments-link"><a href="#">4 评论</a></span>#}
+                            <span class="views-count"><a href="#">{{ blog.views }} 阅读</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+         <h2>你还没有写过任何博客哦, <a href="{% url 'blog:new' %}" style="color: red; border: #66512c"><u>去写一篇</u></a></h2>
+    {% endif %}
+
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('div div button').click(function () {
+            var pri_key = $(this).val();
+            var ele = $(this).parent().parent().parent();
+            $.ajax({
+                url: '{% url 'blog:manage' %}',
+                type: 'post',
+                data: {
+                    pk: pri_key,
+                    csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.is_delete = true) {
+                        // manage 页面也需显示删除
+                        ele.remove();
+                    }
+                }
+            })
+        });
+
+
+    </script>
+{% endblock %}
