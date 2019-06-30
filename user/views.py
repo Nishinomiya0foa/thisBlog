@@ -60,6 +60,7 @@ def register(request):
 
 
 def get_captcha(request):
+    """生成验证码图片"""
     img = Image.new('RGB', (200, 35), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
     font = ImageFont.truetype(font='static/fonts/Rotonda-Bold.otf', size=20)
     captcha_words = ''
@@ -87,6 +88,7 @@ def get_captcha(request):
 
 
 def reg_collapse(request):
+    """注册手风琴样式"""
     # reg 信息
     reg_info = UserModelForm
     return reg_info

@@ -84,6 +84,7 @@ def recv_pic(request):
 
 
 def scan(request, number):
+    """图片详情"""
     res = {}
     pic_obj = Pic.objects.filter(pk=number).first()
     res['pic_obj'] = pic_obj

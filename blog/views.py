@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.contrib import auth
@@ -16,6 +18,8 @@ from user.views import reg_collapse
 
 
 def decorate_logo(f):
+    """登录装饰器, 暂时弃用"""
+    @wraps(f)
     def inner(request, *args, **kwargs):
         res = {}
         if request.session.get('is_login'):
@@ -28,7 +32,7 @@ def decorate_logo(f):
 
 
 def index(request, by_month=None, classify=None):
-
+    """主页, 包括归档 分类 或显示全部, 文章概览, head"""
     # 进行归档 分类 或显示全部  (is_delete=0)
     if by_month:
         blogs = Articles.objects.filter(write_time__month=by_month, is_delete=0, is_public=1).order_by('-write_time')
@@ -72,7 +76,7 @@ def detail(request, number):
 
 
 def manage(request):
-    """管理界面"""
+    """blog管理界面  增删改查"""
     res = {}
     if request.method == 'GET':
         username = request.session.get('username')
@@ -92,7 +96,7 @@ def manage(request):
 
 
 def new(request):
-    """新增"""
+    """新增blog"""
     username = request.session.get('username')
     if request.method == 'GET':
         form = ArticleModelForm()
@@ -111,6 +115,7 @@ def new(request):
 
 
 def edit(request, number):
+    """改 blog"""
     res = {}
     username = request.session.get('username')
     res['username'] = username
@@ -129,6 +134,7 @@ def edit(request, number):
 
 
 def search(request):
+    """搜索 blog, 仅按title"""
     res = {}
     blogs = Articles.objects.all()
     search_content = request.GET.get('search-content', '')
@@ -147,6 +153,7 @@ def search(request):
 
 
 def body_right(res):
+    """按时间 归档 分类"""
     # 最新文章  5篇
     new_blogs = Articles.objects.filter(is_delete=0).order_by('-write_time')
     res['new_blogs'] = new_blogs[:5]
@@ -168,6 +175,7 @@ def body_right(res):
 
 
 def change_logo(request, res):
+    """处理logo修改ajax"""
     if request.session.get('is_login'):
         username = request.session.get('username')
         res['username'] = username
@@ -175,6 +183,11 @@ def change_logo(request, res):
 
 
 def pagination_blog(request, blogs, res, perpage):
+    """分页信息
+        blogs: 所有博客
+        res: 传给前端的字典
+        perpage: 每一页的blog数
+    """
     paginator = Paginator(blogs, perpage)
     page = request.GET.get('page')
     # url上无页码信息.

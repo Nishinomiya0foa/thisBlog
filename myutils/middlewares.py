@@ -13,6 +13,7 @@ class UpdateLogo(MiddlewareMixin):
 
 
 class LoginOrNot(MiddlewareMixin):
+    """限制登录用户才能访问页面"""
     def process_request(self, request):
         # 登录验证
         # detail_pg = re.findall('detail/(\d+)',request.META.get('PATH_INFO'))
@@ -25,7 +26,7 @@ class LoginOrNot(MiddlewareMixin):
 
 
 class Update_views(MiddlewareMixin):
-    """文章阅读次数"""
+    """文章阅读次数计数"""
     def process_request(self, request):
         detail_obj = re.search('/detail/', request.META.get('PATH_INFO'))
         # 没有访问过  或   访问间隔大于 10

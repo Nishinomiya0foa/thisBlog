@@ -7,6 +7,7 @@ from django.utils import timezone
 
 
 class Type(models.Model):
+    """博客类别表, 多对一"""
     name = models.CharField(max_length=15)
 
     def __str__(self):
@@ -14,6 +15,7 @@ class Type(models.Model):
 
 
 class Articles(models.Model):
+    """博客表"""
     title = models.CharField(max_length=40)
     # content = RichTextField()
     content = RichTextUploadingField()
